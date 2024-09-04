@@ -16,5 +16,5 @@ variable "instance_type" {
 
 variable "my_ip" {
   description = "The CIDR allowed to access the instance."
-  default     = "89.247.166.160/32"  # Replace with your actual IP address
+  default     = "89.247.166.172/32"  # Replace with your actual IP address
 }

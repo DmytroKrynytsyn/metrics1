@@ -32,17 +32,17 @@ def main():
     inventory = {
         'node': {
             'hosts': [get_public_ip_by_role('node')], 
-            'vars': { 'ansible_user': 'ec2-user','ansible_ssh_private_key_file': '../cks.pem', 'ansible_ssh_common_args': '-o StrictHostKeyChecking=no'}
+            'vars': { 'ansible_user': 'ec2-user','ansible_ssh_private_key_file': './cks.pem', 'ansible_ssh_common_args': '-o StrictHostKeyChecking=no'}
         },
         'prometheus': {
             'hosts': [get_public_ip_by_role('prometheus')], 
-            'vars': { 'ansible_user': 'ec2-user','ansible_ssh_private_key_file': '../cks.pem', 'ansible_ssh_common_args': '-o StrictHostKeyChecking=no', 
-                      'node': get_private_ip_by_role('node')}
+            'vars': { 'ansible_user': 'ec2-user','ansible_ssh_private_key_file': './cks.pem', 'ansible_ssh_common_args': '-o StrictHostKeyChecking=no', 
+                      'node_ip': get_private_ip_by_role('node')}
         },
         'grafana': {
             'hosts': [get_public_ip_by_role('grafana')], 
-            'vars': { 'ansible_user': 'ec2-user','ansible_ssh_private_key_file': '../cks.pem', 'ansible_ssh_common_args': '-o StrictHostKeyChecking=no', 
-                      'prometheus': get_private_ip_by_role('prometheus')}
+            'vars': { 'ansible_user': 'ec2-user','ansible_ssh_private_key_file': './cks.pem', 'ansible_ssh_common_args': '-o StrictHostKeyChecking=no', 
+                      'prometheus_ip': get_private_ip_by_role('prometheus')}
         }
     }
 

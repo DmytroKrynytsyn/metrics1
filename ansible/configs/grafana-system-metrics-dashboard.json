@@ -1,0 +1,94 @@
+{
+    "uid": "system-metrics",
+    "title": "System Metrics",
+    "tags": ["system", "performance"],
+    "timezone": "browser",
+    "schemaVersion": 26,
+    "version": 1,
+    "panels": [
+      {
+        "type": "graph",
+        "title": "CPU Usage",
+        "datasource": "Prometheus",
+        "targets": [
+          {
+            "expr": "100 - (avg by(instance) (irate(node_cpu_seconds_total{mode='idle'}[5m])) * 100)",
+            "legendFormat": "CPU Usage - {{instance}}",
+            "refId": "A"
+          }
+        ],
+        "gridPos": {
+          "x": 0,
+          "y": 0,
+          "w": 12,
+          "h": 8
+        }
+      },
+      {
+        "type": "graph",
+        "title": "RAM Usage",
+        "datasource": "Prometheus",
+        "targets": [
+          {
+            "expr": "(node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes * 100",
+            "legendFormat": "RAM Usage",
+            "refId": "A"
+          }
+        ],
+        "gridPos": {
+          "x": 12,
+          "y": 0,
+          "w": 12,
+          "h": 8
+        }
+      },
+      {
+        "type": "graph",
+        "title": "Disk Usage",
+        "datasource": "Prometheus",
+        "targets": [
+          {
+            "expr": "100 - (node_filesystem_free_bytes / node_filesystem_size_bytes * 100)",
+            "legendFormat": "{{mountpoint}}",
+            "refId": "A"
+          }
+        ],
+        "gridPos": {
+          "x": 0,
+          "y": 8,
+          "w": 12,
+          "h": 8
+        }
+      },
+      {
+        "type": "graph",
+        "title": "Network I/O",
+        "datasource": "Prometheus",
+        "targets": [
+          {
+            "expr": "rate(node_network_receive_bytes_total[5m])",
+            "legendFormat": "Receive - {{device}}",
+            "refId": "A"
+          },
+          {
+            "expr": "rate(node_network_transmit_bytes_total[5m])",
+            "legendFormat": "Transmit - {{device}}",
+            "refId": "B"
+          }
+        ],
+        "gridPos": {
+          "x": 12,
+          "y": 8,
+          "w": 12,
+          "h": 8
+        }
+      }
+    ],
+    "templating": {
+      "list": []
+    },
+    "annotations": {
+      "list": []
+    }
+  }
+  

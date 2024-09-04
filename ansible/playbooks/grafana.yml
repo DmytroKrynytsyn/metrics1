@@ -1,0 +1,74 @@
+---
+- name: Install and Configure Grafana with Files
+  hosts: grafana
+  become: yes
+  vars:
+    grafana_version: "latest"
+    grafana_datasources: /etc/grafana/provisioning/datasources
+    grafana_dashboards: /etc/grafana/provisioning/dashboards
+    grafana_dashboard_files:
+      - src: ../configs/grafana-system-metrics-dashboard.json
+        dest: /var/lib/grafana/dashboards/system-metrics.json
+
+  tasks:
+    - name: Download Grafana GPG key
+      ansible.builtin.get_url:
+        url: https://rpm.grafana.com/gpg.key
+        dest: /tmp/gpg.key
+        mode: '0644'
+
+    - name: Import Grafana GPG key
+      ansible.builtin.rpm_key:
+        state: present
+        key: /tmp/gpg.key
+
+    - name: Install Grafana via RPM URL
+      ansible.builtin.yum:
+        name: "https://dl.grafana.com/oss/release/grafana-11.2.0-1.x86_64.rpm"
+        state: present
+
+    - name: Start and enable Grafana service
+      systemd:
+        name: grafana-server
+        state: started
+        enabled: yes
+
+    - name: Create directories for provisioning
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: '0755'
+      loop:
+        - "{{ grafana_datasources }}"
+        - "{{ grafana_dashboards }}"
+        - /var/lib/grafana/dashboards
+
+    - name: Configure Grafana Data Source via file
+      template:
+        src: "../configs/grafana-datasources.yml.j2"
+        mode: '0644'
+        dest: "{{ grafana_datasources }}/datasource.yml"
+
+    - name: Configure Grafana Dashboards via provisioning file
+      copy:
+        src: "../configs/grafana-dashboards.yml" 
+        mode: '0644'
+        dest: "{{ grafana_dashboards }}/dashboards.yml"
+
+    - name: Deploy dashboard JSON files
+      copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        mode: '0644'
+      loop: "{{ grafana_dashboard_files }}"
+
+    - name: Add or update DNS entry of prometheus
+      ansible.builtin.lineinfile:
+        path: /etc/hosts
+        state: present
+        line: "{{ hostvars[inventory_hostname]['prometheus_ip'] }} prometheus"
+
+    - name: Restart Grafana to apply changes
+      systemd:
+        name: grafana-server
+        state: restarted

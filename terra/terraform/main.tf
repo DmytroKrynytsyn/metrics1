@@ -20,9 +20,27 @@ resource "aws_security_group" "web_sg" {
   }
 
   ingress {
-    description = "HTTP"
-    from_port   = 80
-    to_port     = 80
+    description = "prometheus"
+    from_port   = 9090
+    to_port     = 9090
+    protocol    = "tcp"
+    self        = true
+    cidr_blocks = [var.my_ip]
+  }
+
+  ingress {
+    description = "scrape"
+    from_port   = 9100
+    to_port     = 9100
+    protocol    = "tcp"
+    self        = true
+    cidr_blocks = [var.my_ip]
+  }
+
+  ingress {
+    description = "grafana"
+    from_port   = 3000
+    to_port     = 3000
     protocol    = "tcp"
     self        = true
     cidr_blocks = [var.my_ip]

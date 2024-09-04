@@ -1,0 +1,9 @@
+apiVersion: 1
+datasources:
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    url: http://{{ hostvars[inventory_hostname]['prometheus_ip'] }}:9090
+    isDefault: true
+    version: 1
+    editable: true
