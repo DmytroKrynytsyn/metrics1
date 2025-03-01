@@ -1,0 +1,22 @@
+[[outputs.prometheus_push]]  
+  push_gateway_url = "http://{{push_gateway_ip}}:9091"
+  push_interval = "10s"  
+  job = "telegraf_metrics" 
+
+[[inputs.cpu]]  
+  percpu = true
+  totalcpu = true
+  collect_cpu_time = false
+
+[[inputs.mem]]  
+[[inputs.disk]] 
+[[inputs.net]] 
+[[inputs.swap]] 
+[[inputs.system]] 
+[[inputs.processes]] 
+[[inputs.kernel]] 
+[[inputs.diskio]] 
+[[inputs.interrupts]] 
+[[inputs.netstat]] 
+[[inputs.procstat]] 
+[[inputs.temp]]

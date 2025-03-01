@@ -5,4 +5,4 @@ global:
 scrape_configs:
   - job_name: "node"
     static_configs:
-      - targets: ["{{ hostvars[inventory_hostname]['node_ip'] }}:9100"]
+      - targets: ["{{ hostvars[inventory_hostname]['scrape_ip'] }}:9100"]

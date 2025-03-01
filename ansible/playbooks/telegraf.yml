@@ -1,0 +1,23 @@
+---
+- name: Install Telegraf
+  hosts: telegraf
+  become: yes
+  vars:
+
+  tasks:
+    - name: Install Telegraf
+      yum:
+        name: telegraf
+        state: present
+
+    - name: Configure Telegraf
+      template:
+        src: "../configs/telegraf.conf.j2"
+        mode: '0644'
+        dest: "/etc/telegraf/telegraf.conf"
+
+    - name: Start and enable Telegraf service
+      systemd:
+        name: telegraf
+        state: started
+        enabled: yes

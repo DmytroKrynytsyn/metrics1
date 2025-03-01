@@ -30,19 +30,24 @@ def get_private_ip_by_role(role: str) -> str:
 def main():
 
     inventory = {
-        'node': {
-            'hosts': [get_public_ip_by_role('node')], 
-            'vars': { 'ansible_user': 'ec2-user','ansible_ssh_private_key_file': './cks.pem', 'ansible_ssh_common_args': '-o StrictHostKeyChecking=no'}
+        'telegraf': {
+            'hosts': [get_public_ip_by_role('telegraf')], 
+            'vars': { 'ansible_user': 'ec2-user','ansible_ssh_private_key_file': './cks.pem', 'ansible_ssh_common_args': '-o StrictHostKeyChecking=no', 
+                      'push_gateway_ip': get_private_ip_by_role('push_gateway')}
         },
         'prometheus': {
             'hosts': [get_public_ip_by_role('prometheus')], 
             'vars': { 'ansible_user': 'ec2-user','ansible_ssh_private_key_file': './cks.pem', 'ansible_ssh_common_args': '-o StrictHostKeyChecking=no', 
-                      'scrape_ip': get_private_ip_by_role('node')}
+                      'scrape_ip': get_private_ip_by_role('push_gateway')}
         },
         'grafana': {
             'hosts': [get_public_ip_by_role('grafana')], 
             'vars': { 'ansible_user': 'ec2-user','ansible_ssh_private_key_file': './cks.pem', 'ansible_ssh_common_args': '-o StrictHostKeyChecking=no', 
                       'prometheus_ip': get_private_ip_by_role('prometheus')}
+        },
+        'push_gateway': {
+            'hosts': [get_public_ip_by_role('push_gateway')], 
+            'vars': { 'ansible_user': 'ec2-user','ansible_ssh_private_key_file': './cks.pem', 'ansible_ssh_common_args': '-o StrictHostKeyChecking=no'}
         }
     }
 
